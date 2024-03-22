@@ -14,9 +14,9 @@ check_tiff <- function(i) {
   plot(test, main = basename(raster))
 }
 
-check_tiff(3)
+check_tiff(4)
 
-saved_rast <- rast(tiff_files[[3]])
+saved_rast <- rast(tiff_files[[4]])
 
 
 ##non function 

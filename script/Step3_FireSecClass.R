@@ -7,8 +7,8 @@
 # input -------------------------------------------------------------------
 
 metric <- "dNBR.tif" #mchoose metric 
-tiff_files <- list.files(here("data", "gee_export"), pattern = metric, ignore.case = TRUE, full.names = TRUE)
-
+tiff_files <- list.files(here("data", "gee_export_sev"), pattern = metric, ignore.case = TRUE, full.names = TRUE)
+raster_test <- rast(tiff_files[2])
 
 # Define colors for each category
 colors <- c("#1a9641",   # Enhanced Growth - high (green)
@@ -23,7 +23,7 @@ colors <- c("#1a9641",   # Enhanced Growth - high (green)
 library(terra)
 library(tidyverse)
 
-# functions ---------------------------------------------------------------
+# functions dNBR ---------------------------------------------------------------
 ##funtion that classifies and catagorizes a raster based on dNBR values  
 dNBR_classify <- function (raster) {
   rcl_dNBR <- matrix(c(-1500,-250,1,
@@ -47,7 +47,7 @@ dNBR_classify <- function (raster) {
   return(raster_class)
 }
 
-r_class_test <- dNBR_classify(rast(tiff_files[1]))
+r_class_test <- dNBR_classify(raster_test)
 plot(r_class_test )#would need to change the pallete before exporting as is. 
 
 
@@ -67,9 +67,13 @@ descriptive_sev_stats <- function(raster){
   return(merge)
 }
 
-test_stat_table <- descriptive_sev_stats(rast(tiff_files[1]))
+test_stat_table <- descriptive_sev_stats(raster_test)
 
 ##could merge these to export both the plot and a table; 
+
+
+# function CBI  -----------------------------------------------------------
+
 
 # process -----------------------------------------------------------------
 #dNBR test 
