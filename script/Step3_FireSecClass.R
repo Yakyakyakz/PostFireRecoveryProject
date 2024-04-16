@@ -4,11 +4,21 @@
 #2 Create a function to give fire severity descrptive stats. 
 #2 Figure out how to color the plots to a suitable pallete. Might be easier to do in built in GG plot. 
 
+
+# library -----------------------------------------------------------------
+library(terra)
+library(tidyverse)
+library(here)
+library(terra)
+library(sf)
+library(dplyr)
+
 # input -------------------------------------------------------------------
 
 metric <- "dNBR.tif" #mchoose metric 
 tiff_files <- list.files(here("data", "gee_export_sev"), pattern = metric, ignore.case = TRUE, full.names = TRUE)
 raster_test <- rast(tiff_files[2])
+plot(raster_test)
 
 # Define colors for each category
 colors <- c("#1a9641",   # Enhanced Growth - high (green)
@@ -19,9 +29,7 @@ colors <- c("#1a9641",   # Enhanced Growth - high (green)
             "#b2182b",   # Moderate-High Severity (dark red)
             "#67001f")   # High Severity (maroon)
 
-# library -----------------------------------------------------------------
-library(terra)
-library(tidyverse)
+
 
 # functions dNBR ---------------------------------------------------------------
 ##funtion that classifies and catagorizes a raster based on dNBR values  
@@ -63,13 +71,15 @@ descriptive_sev_stats <- function(raster){
     left_join(., count, by = "category")%>%
     rename(mean = 2, median =3, sd = 4, px_count = 6)%>%
     mutate(percentage = (px_count/ sum(px_count)*100))%>%
-    select(-layer)
+    dplyr::select(!(layer))
   return(merge)
 }
 
+
 test_stat_table <- descriptive_sev_stats(raster_test)
 
-##could merge these to export both the plot and a table; 
+##could merge these to export both the plot and a table as a figure. 
+##could add in landscapemetrics 
 
 
 # function CBI  -----------------------------------------------------------
@@ -80,16 +90,15 @@ test_stat_table <- descriptive_sev_stats(raster_test)
 dNBR_classified <- dNBR_classify(rast(tiff_files[1]))
 plot(dNBR_classified) 
 
-
  
 
-# Step 4 Zonal Stats ------------------------------------------------------
+# Step 4 Zonal Stats usinf severity; on the landtrendr Data m ------------------------------------------------------
+
+
 
 
 
 # old code ----------------------------------------------------------------
-
-
 raster <- rast(tiff_files[[2]])
 raster_test <- rast(tiff_files[[1]])
 plot(raster)
@@ -127,10 +136,9 @@ sd <- terra::zonal(rast(tiff_files[1]), dNBR_classified, "sd")
 median <- terra::zonal(rast(tiff_files[1]), dNBR_classified, "median")
 count <- freq(dNBR_classified)%>%rename(category=value)
 
-
 test2 <- left_join(mean, median, by = "category")%>%
   left_join(., sd, by = "category")%>%
   left_join(., count, by = "category")%>%
   rename(mean = 2, median =3, sd = 4, count = 6)%>%
-  mutate(percentage = (count/ sum(count)*100))
-
+  mutate(percentage = (count/ sum(count)*100))%>%
+  dplyr::select(-layer)
