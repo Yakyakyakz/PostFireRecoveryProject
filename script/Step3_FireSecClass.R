@@ -142,3 +142,4 @@ test2 <- left_join(mean, median, by = "category")%>%
   rename(mean = 2, median =3, sd = 4, count = 6)%>%
   mutate(percentage = (count/ sum(count)*100))%>%
   dplyr::select(-layer)
+

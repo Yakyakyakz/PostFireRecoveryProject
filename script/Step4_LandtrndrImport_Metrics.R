@@ -363,7 +363,23 @@ print(metric_list)
 metric_df <- do.call(rbind, metric_list) #merges the list to a dataframe of all the metrics. 
 
 
+# Sandbox: playing with the clipped, names exports of GEE  ----------------
 
+landtrendr_files <- list.files(here("data", "gee_export_landtrd"), ignore.case = TRUE, full.names = TRUE)
+test<- rast(landtrendr_files[3]) #hypothetically I would export each fire like this. 
+plot(test)
+fires_shape <- read_sf(here("data", "bnp_perim_selected", "fires_1984_50ha.shp")) #
+
+###
+#for loop 
+#1a - list files in SEVERITY and TIME SERIES 
+#1b - Input SHAPE ; extract ID and Yof 
+#2 - Pull in the SEVERITY; CLASSIFY 
+#3 - Pull in TS; 
+#3a - GLOBAL 
+
+#3b - ZONAL using SEVERITY  
+#Build a list of 
 
 
 
@@ -389,6 +405,7 @@ get_avg_NBR <- function(data, yof){
   return(avg_NBR)
 }
 get_avg_NBR(fire_ts, yof) #confirmed worked!
+
 
 
 
