@@ -15,7 +15,7 @@ fires <- read_sf(here("data", "bnp_perim_all", "fire_incl_islands.shp")) #this i
 
 clean_fire_data <- function(fire_db, year_1, area_ha) {
   s_fires <- fire_db %>%
-    select(c(Fire_Numbe, Start_Date, Date, Fire_Name, Area_ha))%>%
+    dplyr::select(c(Fire_Numbe, Start_Date, Date, Fire_Name, Area_ha))%>%
     filter(Date >year_1, Area_ha >area_ha)
   return (s_fires)
 }

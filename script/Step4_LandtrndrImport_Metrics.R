@@ -22,6 +22,9 @@ r_fire <- rast(landtrendr_files[1]) #hypothetically I would export each fire lik
 fires_shape <- read_sf(here("data", "bnp_perim_selected", "fires_1984_50ha.shp")) #this pulls from a output of step 1 DO NOT change
 
 
+plot(r_fire)
+
+
 #extrating fire ID and yof from the landtrendr file name for linking with the fire shape file. 
 fire_ID <- as.character(regmatches(landtrendr_files , regexpr("[0-9]{4}[A-Z]{2}[0-9]{3}", landtrendr_files )))# takes a filepath and finds the firenumber 
 yof <- as.numeric(regmatches(landtrendr_files , regexpr("[0-9]{4}", landtrendr_files ))) ##make this more specific
@@ -98,8 +101,6 @@ sev_zonal_tidy_mn <- sev_zonal_mn%>%
   pivot_longer(cols = -category, names_to = "year", values_to = "mean")%>%
   mutate(year = str_replace(year, "yr", ""))
 
-
-  
 
 #standard deviation investigation 
 sev_zonal_tidy_sd <- sev_zonal_sd%>%

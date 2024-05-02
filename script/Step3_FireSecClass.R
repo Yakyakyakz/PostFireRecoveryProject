@@ -12,22 +12,17 @@ library(here)
 library(terra)
 library(sf)
 library(dplyr)
+library(landscapemetrics)
+
 
 # input -------------------------------------------------------------------
 
-metric <- "dNBR.tif" #mchoose metric 
+metric <- "dnbr" #mchoose metric 
 tiff_files <- list.files(here("data", "gee_export_sev"), pattern = metric, ignore.case = TRUE, full.names = TRUE)
-raster_test <- rast(tiff_files[2])
+raster_test <- rast(tiff_files[1])
 plot(raster_test)
 
-# Define colors for each category
-colors <- c("#1a9641",   # Enhanced Growth - high (green)
-            "#a6d96a",   # Enhanced Growth - low (light green)
-            "#ffffbf",   # Unburned (yellow)
-            "#fdae61",   # Low Severity (orange)
-            "#d7191c",   # Moderate-Low Severity (red)
-            "#b2182b",   # Moderate-High Severity (dark red)
-            "#67001f")   # High Severity (maroon)
+
 
 
 
@@ -52,11 +47,29 @@ dNBR_classify <- function (raster) {
                                          "High Severity"))
   
   levels(raster_class) <- dNBR_levels #assigning catagories to the levels. 
+  colors <- c("#1a9641",   # Enhanced Growth - high (green)
+              "#a6d96a",   # Enhanced Growth - low (light green)
+              "#ffffbf",   # Unburned (yellow)
+              "#fdae61",   # Low Severity (orange)
+              "#d7191c",   # Moderate-Low Severity (red)
+              "#b2182b",   # Moderate-High Severity (dark red)
+              "#67001f")   # High Severity (maroon)
+  coltb <- data.frame(value=1:7, col= colors)
+  coltab(raster_class) <- coltb
   return(raster_class)
 }
-
 r_class_test <- dNBR_classify(raster_test)
 plot(r_class_test )#would need to change the pallete before exporting as is. 
+
+
+###boththese need to happen after the clip. 
+
+# landscapemetrics NEW as of May  -----------------------------------------
+
+##
+LMU_lsm <- calculate_lsm(landscape =r_class_test, what=c("lsm_l_contag", "lsm_l_ed","lsm_l_shdi" ,"lsm_c_ca", "lsm_c_pland"),progress = TRUE)
+
+
 
 
 ##function to provide descriptive stats on fire severity classes and relative area within the burn perimeter. 
@@ -76,7 +89,7 @@ descriptive_sev_stats <- function(raster){
 }
 
 
-test_stat_table <- descriptive_sev_stats(raster_test)
+test_stat_table <- descriptive_sev_stats(raster_test) ##THIS IS NOT FOR THE FIRE PERIMETER! 
 
 ##could merge these to export both the plot and a table as a figure. 
 ##could add in landscapemetrics 
@@ -142,4 +155,25 @@ test2 <- left_join(mean, median, by = "category")%>%
   rename(mean = 2, median =3, sd = 4, count = 6)%>%
   mutate(percentage = (count/ sum(count)*100))%>%
   dplyr::select(-layer)
+
+
+##reclassification of the colors 
+
+
+coltb <- data.frame(value=1:7, col= colors)
+
+has.colors(r_class_test)
+coltab(r_class_test) <- coltb
+plot(r_class_test)
+has.colors(r)
+
+# Define colors for each category
+colors <- c("#1a9641",   # Enhanced Growth - high (green)
+            "#a6d96a",   # Enhanced Growth - low (light green)
+            "#ffffbf",   # Unburned (yellow)
+            "#fdae61",   # Low Severity (orange)
+            "#d7191c",   # Moderate-Low Severity (red)
+            "#b2182b",   # Moderate-High Severity (dark red)
+            "#67001f")   # High Severity (maroon)
+
 
