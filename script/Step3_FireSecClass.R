@@ -19,7 +19,7 @@ library(landscapemetrics)
 
 metric <- "dnbr" #mchoose metric 
 tiff_files <- list.files(here("data", "gee_export_sev"), pattern = metric, ignore.case = TRUE, full.names = TRUE)
-raster_test <- rast(tiff_files[1])
+raster_test <- rast(tiff_files[3])
 plot(raster_test)
 
 
@@ -59,7 +59,7 @@ dNBR_classify <- function (raster) {
   return(raster_class)
 }
 r_class_test <- dNBR_classify(raster_test)
-plot(r_class_test )#would need to change the pallete before exporting as is. 
+plot(r_class_test)#would need to change the pallete before exporting as is. 
 
 
 ###boththese need to happen after the clip. 

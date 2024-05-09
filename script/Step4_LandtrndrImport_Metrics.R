@@ -43,7 +43,7 @@ r_fire_ts <- crop(r_fire, fire_vect, mask = T) #this cops the fire raster to the
 
 
 # Calculating GLOBAL (fire-wide) time series  -----------------------------
-mean_ts <- terra::global(r_fire, fun= "mean",  na.rm = TRUE)#98
+mean_ts <- terra::global(r_fire, fun= "mean",  na.rm = TRUE)#98 ##i think this is wrong - nees to be the dropped version. 
 sd_ts <- terra::global(r_fire, fun= "sd",  na.rm = TRUE)
 
 
@@ -101,6 +101,8 @@ sev_zonal_tidy_mn <- sev_zonal_mn%>%
   pivot_longer(cols = -category, names_to = "year", values_to = "mean")%>%
   mutate(year = str_replace(year, "yr", ""))
 
+
+  
 
 #standard deviation investigation 
 sev_zonal_tidy_sd <- sev_zonal_sd%>%
